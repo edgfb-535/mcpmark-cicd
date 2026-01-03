@@ -1,0 +1,32 @@
+name: Test Label Creation
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  test-label:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create test label
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { github, context } = require('@actions/github');
+            const issue = context.issue;
+
+            try {
+              await github.rest.issues.createLabel({
+                owner: issue.owner,
+                repo: issue.repo,
+                name: 'test-label',
+                color: 'ff0000',
+                description: 'Test label'
+              });
+              console.log('Created test label.');
+            } catch (error) {
+              console.error('Failed to create test label:', error);
+            }
